@@ -1,27 +1,102 @@
-Render-এ প্রয়োজনীয় Environment Variables
-DJANGO_SECRET_KEY
-প্রোডাকশন সিক্রেট কী (র‍্যান্ডম স্ট্রিং দিন).
-DEBUG
-0 (প্রোডাকশন).
-ALLOWED_HOSTS
-আপনার Render ডোমেইন. উদাহরণ: myapp.onrender.com
-DATABASE_URL
-Render Postgres রিসোর্স থেকে অটো-সেট/কপি হবে (render.yaml থাকলে অটো ওয়্যারিং হয়).
-CSRF_TRUSTED_ORIGINS
-https://myapp.onrender.com (আপনার ডোমেইন অনুযায়ী পরিবর্তন).
-CORS_ALLOWED_ORIGINS
-ফ্রন্টএন্ড অরিজিনগুলো (কমা-সেপারেটেড). উদাহরণ:
-https://my-frontend.onrender.com,https://www.yourdomain.com
-ADMIN_USERNAME, ADMIN_EMAIL, ADMIN_PASSWORD
-অটো-সুপারইউজার তৈরির জন্য (আমাদের create_initial_superuser কমান্ড এগুলো ব্যবহার করে).
-উদাহরণ: admin, admin[example.com](cci:4://file://example.com:0:0-0:0), generateValue বা নিজে দিন.
-(অটো) RENDER_EXTERNAL_HOSTNAME
-Render সেট করে; আমরা settings.py-তে CSRF-এ এই হোস্ট ট্রাস্ট করি।
-(yaml-এ) PYTHON_VERSION
-উদাহরণ: 3.12.5 (render.yaml-এ আছে).
-ফ্রন্টএন্ড (Static Site) এর জন্য
-VITE_API_BASE_URL
-উদাহরণ: https://myapp.onrender.com/api
-নোট
-render.yaml-এ startCommand ইতিমধ্যে migrate → create_initial_superuser → collectstatic → gunicorn চালায়।
-মিডিয়া ফাইল Render-এ পারসিস্টেন্ট নয়; পরে S3/Cloudinary কনফিগ বিবেচনা করুন।
+Variables (Environment) সেট করুন
+DJANGO_SECRET_KEY: একটি শক্তিশালী সিক্রেট।
+DEBUG: 0
+ADMIN_USERNAME: admin (বা আপনার পছন্দ)
+ADMIN_EMAIL: admin[example.com](cci:4://file://example.com:0:0-0:0) (বা আপনার)
+ADMIN_PASSWORD: একটি শক্তিশালী পাসওয়ার্ড
+CORS_ALLOWED_ORIGINS: আপনার ফ্রন্টএন্ড URL (যেমন https://your-frontend.example.com)
+CSRF_TRUSTED_ORIGINS: একই ফ্রন্টএন্ড URL (scheme সহ)
+নোট: RAILWAY_PUBLIC_DOMAIN Railway নিজেই দেয়; আমরা কোডে এটি হ্যান্ডল করেছি, তাই ALLOWED_HOSTS আলাদা করে দিতে হবে না।
+Database
+Add Plugin → PostgreSQL → Link করুন।
+এতে DATABASE_URL অটো সেট হবে; settings.py এটি ধরবে।
+Ports / Start Command
+Dockerfile-এ EXPOSE 8000 এবং start.sh 0.0.0.0:$PORT-এ bind করে। Railway PORT দেয়, আলাদা কনফিগ লাগবে না।
+Deploy
+Build শেষ হলে ডেপ্লয় হবে। Logs-এ migrate/collectstatic এবং gunicorn স্টার্ট দেখা যাবে।
+গুরুত্বপূর্ণ নোট
+মিডিয়া আপলোড: বর্তমানে লোকাল MEDIA_ROOT ব্যবহার করছে; Railway-এর কন্টেইনার ফাইলসিস্টেম এফেমেরাল। প্রোডাকশনে আপলোড persist করতে চাইলে:
+Railway Volume মাউন্ট করুন এবং MEDIA_ROOT সেই পাথে সেট করুন, অথবা
+S3/Cloud storage ব্যবহার করুন।
+ফ্রন্টএন্ড আলাদা হোস্টে হলে CORS/CSRF দুটি এনভ-এ সঠিক ডোমেইন দিন।
+সুপারইউজার: create_initial_superuser কমান্ড এনভ ভেরিয়েবলগুলো থেকে ইউজার তৈরি করবে; ভুল হলে লগ-এ দেখাবে, পরে Railway Console → Shell থেকে python manage.py createsuperuser দিয়েও করতে পারেন।
+পরবর্তী পদক্ষেপ
+GitHub Desktop দিয়ে পুশ করুন।
+Railway-তে প্রজেক্ট তৈরি করে উপরোক্ত এনভ ভেরিয়েবলগুলো সেট করুন এবং Postgres লিংক করুন।
+ডেপ্লয় চালান এবং পাবলিক URL শেয়ার করুন, প্রয়োজন হলে আমি CORS/CSRF মানগুলো ফাইনটিউন করব।
+সারাংশ
+Railway-এর জন্য প্রয়োজনীয় ফাইল ও কোড পরিবর্তন যুক্ত করে লোকাল কমিট করেছি।
+Railway-তে Dockerfile ভিত্তিক ডেপ্লয়, ENV, Postgres, এবং ডোমেইন কনফিগ কীভাবে করবেন তা উল্লেখ করা হয়েছে।
+
+
+
+
+
+
+
+
+2025-11-09T12:40:35.403697842Z [inf]  
+2025-11-09T12:40:35.873760183Z [inf]  [35m[Region: us-west1][0m
+2025-11-09T12:40:35.882179216Z [inf]  
+2025-11-09T12:40:35.882212086Z [inf]  [38;2;125;86;243m╭─────────────────╮[0m
+2025-11-09T12:40:35.882218240Z [inf]  [38;2;125;86;243m│[0m Railpack 0.10.0 [38;2;125;86;243m│[0m
+2025-11-09T12:40:35.882223323Z [inf]  [38;2;125;86;243m╰─────────────────╯[0m
+2025-11-09T12:40:35.882229456Z [inf]  
+2025-11-09T12:40:35.882233763Z [inf]  [33m⚠ Script start.sh not found[0m
+2025-11-09T12:40:35.882238100Z [inf]  
+2025-11-09T12:40:35.882242556Z [inf]  [1mSteps[0m
+2025-11-09T12:40:35.882246645Z [inf]  [38;5;238m──────────[0m
+2025-11-09T12:40:35.882251221Z [inf]  [95m▸ build[0m
+2025-11-09T12:40:35.882256234Z [inf]  [38;5;245m$[0m [1mpip install -r requirements.txt[0m
+2025-11-09T12:40:35.882261050Z [inf]  
+2025-11-09T12:40:35.882264829Z [inf]  [1mDeploy[0m
+2025-11-09T12:40:35.882268725Z [inf]  [38;5;238m──────────[0m
+2025-11-09T12:40:35.882272363Z [inf]  [38;5;245m$[0m [1mpython manage.py migrate --noinput && python manage.py create_initial_superuser && python manage.py collectstatic --noinput && gunicorn backend_django.wsgi:application[0m
+2025-11-09T12:40:35.882276200Z [inf]  
+2025-11-09T12:40:35.882281110Z [inf]  
+2025-11-09T12:40:35.883389585Z [inf]  Successfully prepared Railpack plan for build
+2025-11-09T12:40:35.883426419Z [inf]  
+2025-11-09T12:40:35.883434474Z [inf]  
+2025-11-09T12:40:35.884112484Z [inf]  context: cjwm-RVR7
+2025-11-09T12:40:36.038142981Z [inf]  [internal] load build definition from railpack-plan.json
+2025-11-09T12:40:36.038218663Z [inf]  [internal] load build definition from railpack-plan.json
+2025-11-09T12:40:36.038237039Z [inf]  [internal] load build definition from railpack-plan.json
+2025-11-09T12:40:36.048898180Z [inf]  [internal] load build definition from railpack-plan.json
+2025-11-09T12:40:36.050729582Z [inf]  resolve image config for docker-image://ghcr.io/railwayapp/railpack-frontend:v0.10.0
+2025-11-09T12:40:36.281818172Z [inf]  resolve image config for docker-image://ghcr.io/railwayapp/railpack-frontend:v0.10.0
+2025-11-09T12:40:36.281962580Z [inf]  docker-image://ghcr.io/railwayapp/railpack-frontend:v0.10.0@sha256:0a243902b3816689bd8b6db5f75d951d3bb3dd9421c6667b4b78692bceb70975
+2025-11-09T12:40:36.282019642Z [inf]  docker-image://ghcr.io/railwayapp/railpack-frontend:v0.10.0@sha256:0a243902b3816689bd8b6db5f75d951d3bb3dd9421c6667b4b78692bceb70975
+2025-11-09T12:40:36.287199268Z [inf]  docker-image://ghcr.io/railwayapp/railpack-frontend:v0.10.0@sha256:0a243902b3816689bd8b6db5f75d951d3bb3dd9421c6667b4b78692bceb70975
+2025-11-09T12:40:36.287466732Z [inf]  docker-image://ghcr.io/railwayapp/railpack-frontend:v0.10.0@sha256:0a243902b3816689bd8b6db5f75d951d3bb3dd9421c6667b4b78692bceb70975
+2025-11-09T12:40:36.389629122Z [inf]  load build definition from railpack-plan.json
+2025-11-09T12:40:36.389695865Z [inf]  load build definition from railpack-plan.json
+2025-11-09T12:40:36.389792115Z [inf]  load build definition from railpack-plan.json
+2025-11-09T12:40:36.401207074Z [inf]  load build definition from railpack-plan.json
+2025-11-09T12:40:36.981212680Z [inf]  [railpack] merge ghcr.io/railwayapp/railpack-runtime:latest, $build
+2025-11-09T12:40:36.981264612Z [inf]  copy /app
+2025-11-09T12:40:36.981275830Z [inf]  pip install -r requirements.txt
+2025-11-09T12:40:36.981285665Z [inf]  [railpack] secrets hash
+2025-11-09T12:40:36.981292955Z [inf]  copy .
+2025-11-09T12:40:36.981299137Z [inf]  loading .
+2025-11-09T12:40:36.981307282Z [inf]  docker-image://ghcr.io/railwayapp/railpack-builder:latest
+2025-11-09T12:40:36.981312631Z [inf]  docker-image://ghcr.io/railwayapp/railpack-runtime:latest
+2025-11-09T12:40:36.981325418Z [inf]  loading .
+2025-11-09T12:40:36.981333987Z [inf]  docker-image://ghcr.io/railwayapp/railpack-runtime:latest
+2025-11-09T12:40:36.981353961Z [inf]  docker-image://ghcr.io/railwayapp/railpack-builder:latest
+2025-11-09T12:40:36.981364647Z [inf]  [railpack] secrets hash
+2025-11-09T12:40:37.244876389Z [inf]  docker-image://ghcr.io/railwayapp/railpack-runtime:latest
+2025-11-09T12:40:37.245388765Z [inf]  docker-image://ghcr.io/railwayapp/railpack-runtime:latest
+2025-11-09T12:40:37.301862030Z [inf]  docker-image://ghcr.io/railwayapp/railpack-builder:latest
+2025-11-09T12:40:37.301941583Z [inf]  loading .
+2025-11-09T12:40:37.301951371Z [inf]  docker-image://ghcr.io/railwayapp/railpack-builder:latest
+2025-11-09T12:40:37.301958326Z [inf]  [railpack] secrets hash
+2025-11-09T12:40:37.301971473Z [inf]  docker-image://ghcr.io/railwayapp/railpack-builder:latest
+2025-11-09T12:40:37.312703772Z [inf]  [railpack] secrets hash
+2025-11-09T12:40:37.323980555Z [inf]  loading .
+2025-11-09T12:40:37.325352924Z [inf]  copy .
+2025-11-09T12:40:37.385955966Z [inf]  copy .
+2025-11-09T12:40:37.387886405Z [inf]  pip install -r requirements.txt
+2025-11-09T12:40:37.499333751Z [inf]  sh: 1: pip: not found
+
+2025-11-09T12:40:37.527254278Z [err]  pip install -r requirements.txt
+2025-11-09T12:40:37.542278517Z [err]  ERROR: failed to build: failed to solve: process "sh -c pip install -r requirements.txt" did not complete successfully: exit code: 127
