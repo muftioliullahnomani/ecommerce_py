@@ -102,6 +102,14 @@ render_host = os.environ.get('RENDER_EXTERNAL_HOSTNAME')
 if render_host:
     CSRF_TRUSTED_ORIGINS.append(f'https://{render_host}')
 
+# Railway public domain handling
+railway_host = os.environ.get('RAILWAY_PUBLIC_DOMAIN')
+if railway_host:
+    # Allow host for Django
+    ALLOWED_HOSTS.append(railway_host)
+    # Trust for CSRF with https scheme
+    CSRF_TRUSTED_ORIGINS.append(f'https://{railway_host}')
+
 REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.AllowAny',

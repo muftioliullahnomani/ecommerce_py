@@ -1,0 +1,15 @@
+# Exclude anything not needed for backend build
+frontend/
+node_modules/
+.git
+.gitignore
+*.mp4
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.env
+venv/
+.idea/
+.vscode/
+*
