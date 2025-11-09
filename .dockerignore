@@ -12,3 +12,8 @@ __pycache__/
 venv/
 .idea/
 .vscode/
+!backend_django/**
+!start.sh
+!requirements.txt
+!Dockerfile
+!Procfile
