@@ -1,0 +1,22 @@
+:root{--admin-bg:#fff;}
+/* Make the submit row sticky at the bottom on change pages */
+.change-form .submit-row{
+  position: sticky;
+  bottom: 0;
+  background: var(--admin-bg);
+  z-index: 1000;
+  box-shadow: 0 -4px 12px rgba(0,0,0,0.06);
+  border-top: 1px solid #e5e7eb;
+}
+/* Ensure spacing looks good when stuck */
+.change-form .submit-row input, .change-form .submit-row a{
+  margin-top: 6px;
+  margin-bottom: 6px;
+}
+/* Wider hit area on mobile */
+@media (max-width: 640px){
+  .change-form .submit-row{
+    padding-top: 10px;
+    padding-bottom: 10px;
+  }
+}

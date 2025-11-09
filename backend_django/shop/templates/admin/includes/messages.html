@@ -1,0 +1,54 @@
+{% load i18n %}
+{% if messages %}
+<ul class="messagelist">
+  {% for message in messages %}
+    <li class="{{ message.tags }}">
+      <span class="message-text">{{ message|capfirst }}</span>
+      <button type="button" class="admin-msg-close" aria-label="Close notification" title="Close">&times;</button>
+    </li>
+  {% endfor %}
+</ul>
+<style>
+  .messagelist { position: relative; }
+  .messagelist li { position: relative; padding-right: 34px; }
+  .messagelist .admin-msg-close {
+    position: absolute;
+    right: 6px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: #ef4444; /* red */
+    color: #fff;
+    border: none;
+    width: 22px;
+    height: 22px;
+    line-height: 20px;
+    text-align: center;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 14px;
+    padding: 0;
+  }
+  .messagelist .admin-msg-close:hover { filter: brightness(0.95); }
+  .messagelist li.fade-out { opacity: 0; transition: opacity .4s ease; }
+</style>
+<script>
+  (function(){
+    document.addEventListener('click', function(e){
+      var target = e.target;
+      if (target && target.classList && target.classList.contains('admin-msg-close')) {
+        var li = target.closest('li');
+        if (li) li.remove();
+      }
+    });
+    // Auto-hide after 10 seconds
+    var items = document.querySelectorAll('.messagelist li');
+    items.forEach(function(li){
+      setTimeout(function(){
+        if (!document.body.contains(li)) return;
+        li.classList.add('fade-out');
+        setTimeout(function(){ if (li && li.parentNode) li.parentNode.removeChild(li); }, 400);
+      }, 10000);
+    });
+  })();
+</script>
+{% endif %}

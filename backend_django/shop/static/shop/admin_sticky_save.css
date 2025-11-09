@@ -1,0 +1,5 @@
+.sticky-save-tools{display:flex;gap:8px;align-items:center;margin-left:8px}
+.sticky-save-tools .sticky-save-btn{appearance:none;background:var(--button-bg,#2563eb);color:#fff;border:1px solid var(--button-bg,#2563eb);border-radius:6px;padding:6px 10px;font-size:12px;line-height:1;cursor:pointer}
+.object-tools{display:flex;align-items:center;gap:8px;position:sticky;top:0;z-index:999;background:var(--body-bg,#f8f8f8);padding:8px 0}
+/* Keep title from overlapping when sticky bar appears */
+#content h1{margin-top:0;padding-top:4px}

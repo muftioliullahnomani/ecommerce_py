@@ -1,0 +1,27 @@
+Render-এ প্রয়োজনীয় Environment Variables
+DJANGO_SECRET_KEY
+প্রোডাকশন সিক্রেট কী (র‍্যান্ডম স্ট্রিং দিন).
+DEBUG
+0 (প্রোডাকশন).
+ALLOWED_HOSTS
+আপনার Render ডোমেইন. উদাহরণ: myapp.onrender.com
+DATABASE_URL
+Render Postgres রিসোর্স থেকে অটো-সেট/কপি হবে (render.yaml থাকলে অটো ওয়্যারিং হয়).
+CSRF_TRUSTED_ORIGINS
+https://myapp.onrender.com (আপনার ডোমেইন অনুযায়ী পরিবর্তন).
+CORS_ALLOWED_ORIGINS
+ফ্রন্টএন্ড অরিজিনগুলো (কমা-সেপারেটেড). উদাহরণ:
+https://my-frontend.onrender.com,https://www.yourdomain.com
+ADMIN_USERNAME, ADMIN_EMAIL, ADMIN_PASSWORD
+অটো-সুপারইউজার তৈরির জন্য (আমাদের create_initial_superuser কমান্ড এগুলো ব্যবহার করে).
+উদাহরণ: admin, admin[example.com](cci:4://file://example.com:0:0-0:0), generateValue বা নিজে দিন.
+(অটো) RENDER_EXTERNAL_HOSTNAME
+Render সেট করে; আমরা settings.py-তে CSRF-এ এই হোস্ট ট্রাস্ট করি।
+(yaml-এ) PYTHON_VERSION
+উদাহরণ: 3.12.5 (render.yaml-এ আছে).
+ফ্রন্টএন্ড (Static Site) এর জন্য
+VITE_API_BASE_URL
+উদাহরণ: https://myapp.onrender.com/api
+নোট
+render.yaml-এ startCommand ইতিমধ্যে migrate → create_initial_superuser → collectstatic → gunicorn চালায়।
+মিডিয়া ফাইল Render-এ পারসিস্টেন্ট নয়; পরে S3/Cloudinary কনফিগ বিবেচনা করুন।
